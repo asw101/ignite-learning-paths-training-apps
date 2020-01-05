@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -e
 
 # default values
 [[ -z "$SESSION_CODE" ]] && export SESSION_CODE='TWT'
