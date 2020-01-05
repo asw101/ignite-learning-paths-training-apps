@@ -58,7 +58,6 @@
 	"variables": {
 		"aciName": "bootstrap-container",
 		"rgname": "[resourceGroup().name]",
-		"bootstrapRoleAssignmentId": "[guid(concat(resourceGroup().id, 'contributor'))]",
 		"containerName": "logs",
 		"sessionCode": "TWT"
 	},
@@ -68,9 +67,6 @@
 			"apiVersion": "2018-10-01",
 			"name": "[variables('aciName')]",
 			"location": "[resourceGroup().location]",
-			"dependsOn": [
-				"[resourceId('Microsoft.Authorization/roleAssignments', variables('bootstrapRoleAssignmentId'))]"
-			],
 			"properties": {
 				"osType": "Linux",
 				"restartPolicy": "Never",
