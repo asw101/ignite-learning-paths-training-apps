@@ -3,9 +3,9 @@ set -e
 
 # Credentials
 azureClientID=$CLIENT_ID
-azureClientSecret=$SECRET
+azureClientSecret=$CLIENT_SECRET
 sqlServerUser=sqladmin
-sqlServePassword=Password2020!
+sqlServerPassword=$(openssl rand -hex 12)'A1!'
 
 # Azure and container image location
 azureResourceGroup=$RESOURCE_GROUP_NAME
@@ -37,7 +37,7 @@ printf "\n*** Deploying resources: this will take a few minutes... ***\n"
 
 az group deployment create -g $azureResourceGroup --template-file $tailwindInfrastructure \
   --parameters servicePrincipalId=$azureClientID servicePrincipalSecret=$azureClientSecret \
-  sqlServerAdministratorLogin=$sqlServerUser sqlServerAdministratorLoginPassword=$sqlServePassword \
+  sqlServerAdministratorLogin=$sqlServerUser sqlServerAdministratorLoginPassword=$sqlServerPassword \
   aksVersion=1.14.5 pgversion=10
 
 # # Application Insights (using preview extension)
@@ -68,7 +68,7 @@ kubectl apply -f $tailwindServiceAccount
 # Create Helm values file
 printf "\n*** Create Helm values file... ***\n"
 
-pwsh $tailwindChartValuesScript -resourceGroup $azureResourceGroup -sqlPwd $sqlServePassword -outputFile $tailwindChartValues
+pwsh $tailwindChartValuesScript -resourceGroup $azureResourceGroup -sqlPwd $sqlServerPassword -outputFile $tailwindChartValues
 
 # Deploy application to Kubernetes
 printf "\n***Deplpying applications to Kubernetes.***\n"
