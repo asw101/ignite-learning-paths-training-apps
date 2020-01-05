@@ -1,5 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# apt - install curl, git, jq, vim
 apt-get update
-# install curl, git, jq
 apt-get install curl git jq vim -y
 
 # install azure cli
@@ -13,8 +16,5 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s htt
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
 
-# cleanup apt
+# apt - cleanup
 rm -rf /var/lib/apt/lists/*
-
-# make boot-strap.sh executable
-chmod +x boot-strap.sh
