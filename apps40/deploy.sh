@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e
 
+# check for env vars
+[[ -z "$CLIENT_ID" ]] && echo "CLIENT_ID not set" && return 1
+[[ -z "$CLIENT_SECRET" ]] && echo "CLIENT_SECRET not set" && return 1
+
 # Credentials
-azureClientID=$CLIENT_ID
-azureClientSecret=$SECRET
 sqlServerUser=sqladmin
 sqlServePassword=Password2020!
 
@@ -56,7 +58,7 @@ az network vnet subnet create \
 printf "\n*** Deploying resources: this will take a few minutes... ***\n"
 vnetID=$(az network vnet subnet show --resource-group $azureResourceGroup --vnet-name k8sVNet --name k8sSubnet --query id -o tsv)
 az group deployment create -g $azureResourceGroup --template-file $tailwindInfrastructure \
-  --parameters servicePrincipalId=$azureClientID servicePrincipalSecret=$azureClientSecret \
+  --parameters servicePrincipalId=$CLIENT_ID servicePrincipalSecret=$CLIENT_SECRET \
   sqlServerAdministratorLogin=$sqlServerUser sqlServerAdministratorLoginPassword=$sqlServePassword \
   aksVersion=1.14.8 pgversion=10 vnetSubnetID=$vnetID
 
