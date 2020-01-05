@@ -2,6 +2,12 @@
 	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"servicePrincipalTenantId": {
+			"type": "string",
+			"metadata": {
+				"description": "The tenant id of the service principal is used when deploying the Azure Kubernetes Service cluster."
+			  }
+		},
 		"servicePrincipalId": {
 			"type": "string",
 			"metadata": {
@@ -19,6 +25,34 @@
 			"metadata": {
 				"description": "This value will be tagged on the resource group for identification purposes."
 			  }
+		},
+		"sourceRepo": {
+			"type": "string",
+			"metadata": {
+				"description": "The source repository to use for the deployment."
+			},
+			"defaultValue":"https://github.com/asw101/ignite-learning-paths-training-apps.git"
+		},
+		"sourceBranch": {
+			"type": "string",
+			"metadata": {
+				"description": "The branch of the source repository to use for the deployment."
+			},
+			"defaultValue":"aaron-2"
+		},
+		"entrypoint": {
+			"type": "string",
+			"metadata": {
+				"description": "The script to use as an entrypoint."
+			},
+			"defaultValue":"entrypoint.sh"
+		},
+		"deploymentImage": {
+			"type": "string",
+			"metadata": {
+				"description": "The docker image to deploy"
+			},
+			"defaultValue":"asw101/itt-bootstrap:2.0"
 		}
 	},
 	"variables": {
@@ -28,9 +62,6 @@
 		"identityName": "bootstrap-creds",
 		"contributorRoleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
 		"containerName": "logs",
-		"deploymentImage": "scottyc/itt-bootstrap:1.0",
-		"sourceRepo": "https://github.com/microsoft/ignite-learning-paths-training-apps.git",
-		"entrypoint": "/apps40/deploy.sh",
 		"sessionCode": "TWT"
 	},
 	"resources": [{
@@ -73,12 +104,8 @@
 				"containers": [{
 					"name": "[variables('containerName')]",
 					"properties": {
-						"image": "[variables('deploymentImage')]",
-						"command": [
-							"/bin/sh",
-							"-c",
-							"sh /boot-strap.sh"
-						],
+						"image": "[parameters('deploymentImage')]",
+						"command": [],
 						"resources": {
 							"requests": {
 								"cpu": 2,
@@ -91,19 +118,23 @@
 							},
 							{
 								"name": "SOURCE_REPOSITORY",
-								"secureValue": "[variables('sourceRepo')]"
+								"secureValue": "[parameters('sourceRepo')]"
+							},
+							{
+								"name": "SOURCE_BRANCH",
+								"secureValue": "[parameters('sourceBranch')]"
 							},
 							{
 								"name": "ENTRYPOINT",
-								"secureValue": "[variables('entrypoint')]"
-							},
-							{
-								"name": "MANAGED_IDENTITY",
-								"secureValue": "[concat(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')))]"
+								"secureValue": "[parameters('entrypoint')]"
 							},
 							{
 								"name": "SESSION_CODE",
 								"secureValue": "[variables('sessionCode')]"
+							},
+							{
+								"name": "TENANT_ID",
+								"secureValue": "[parameters('servicePrincipalTenantId')]"
 							},
 							{
 								"name": "CLIENT_ID",
