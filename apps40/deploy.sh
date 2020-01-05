@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Credentials
 sqlServerUser=sqladmin
-sqlServePassword=Password2020!
+sqlServePassword=$(openssl rand -hex 12)'A1!'
 
 # Azure and container image location
 azureResourceGroup=$RESOURCE_GROUP_NAME
