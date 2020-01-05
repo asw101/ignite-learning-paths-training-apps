@@ -1,11 +1,9 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Credentials
-azureClientID=$CLIENT_ID
-azureClientSecret=$SECRET
 sqlServerUser=sqladmin
-sqlServePassword=Password2020!
+sqlServePassword=$(openssl rand -hex 12)'A1!'
 
 # Azure and container image location
 azureResourceGroup=$RESOURCE_GROUP_NAME
@@ -15,8 +13,8 @@ containerVersion=v2
 # Tailwind deployment
 tailwindInfrastructure=deployment.json
 tailwindCharts=TailwindTraders-Backend/Deploy/helm
-tailwindChartValuesScript=/helm-values/generate-config.ps1
-tailwindChartValues=/values.yaml
+tailwindChartValuesScript=helm-values/generate-config.ps1
+tailwindChartValues=values.yaml
 tailwindWebImages=TailwindTraders-Backend/Deploy/tt-images
 tailwindServiceAccount=TailwindTraders-Backend/Deploy/helm/ttsa.yaml
 
@@ -56,7 +54,7 @@ az network vnet subnet create \
 printf "\n*** Deploying resources: this will take a few minutes... ***\n"
 vnetID=$(az network vnet subnet show --resource-group $azureResourceGroup --vnet-name k8sVNet --name k8sSubnet --query id -o tsv)
 az group deployment create -g $azureResourceGroup --template-file $tailwindInfrastructure \
-  --parameters servicePrincipalId=$azureClientID servicePrincipalSecret=$azureClientSecret \
+  --parameters servicePrincipalId=$CLIENT_ID servicePrincipalSecret=$CLIENT_SECRET \
   sqlServerAdministratorLogin=$sqlServerUser sqlServerAdministratorLoginPassword=$sqlServePassword \
   aksVersion=1.14.8 pgversion=10 vnetSubnetID=$vnetID
 
@@ -158,7 +156,7 @@ az storage blob upload-batch --destination $BLOB_ENDPOINT --destination product-
 az storage blob upload-batch --destination $BLOB_ENDPOINT --destination profiles-list --source $tailwindWebImages/profiles-list --account-name $STORAGE
 
 #
-printf "\n***Setting up sclaing backend componets.***\n"
+printf "\n***Setting up scaling backend componets.***\n"
 #helm repo add kedacore https://kedacore.azureedge.net/helm
 #helm repo update
 #helm install kedacore/keda-edge --devel --set logLevel=debug --namespace keda --name keda
