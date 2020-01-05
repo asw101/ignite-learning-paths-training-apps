@@ -6,4 +6,4 @@ COPY . .
 
 RUN bash docker-install.sh
 
-CMD ["/boot-strap.sh"]
+CMD ["boot-strap.sh"]
