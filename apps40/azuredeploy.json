@@ -85,25 +85,22 @@
 								"memoryInGB": 4
 							}
 						},
-						"environmentVariables": [{
-								"name": "RESOURCE_GROUP_NAME",
-								"secureValue": "[variables('rgname')]"
-							},
-							{
-								"name": "SOURCE_REPOSITORY",
-								"secureValue": "[parameters('sourceRepo')]"
-							},
-							{
-								"name": "SOURCE_BRANCH",
-								"secureValue": "[parameters('sourceBranch')]"
-							},
+						"environmentVariables": [
 							{
 								"name": "ENTRYPOINT",
 								"secureValue": "[parameters('entrypoint')]"
 							},
 							{
-								"name": "SESSION_CODE",
-								"secureValue": "[variables('sessionCode')]"
+								"name": "REPOSITORY",
+								"secureValue": "[parameters('sourceRepo')]"
+							},
+							{
+								"name": "BRANCH",
+								"secureValue": "[parameters('sourceBranch')]"
+							},
+							{
+								"name": "RESOURCE_GROUP_NAME",
+								"secureValue": "[variables('rgname')]"
 							},
 							{
 								"name": "TENANT_ID",
@@ -114,12 +111,16 @@
 								"secureValue": "[parameters('servicePrincipalId')]"
 							},
 							{
-								"name": "SECRET",
+								"name": "CLIENT_SECRET",
 								"secureValue": "[parameters('servicePrincipalSecret')]"
 							},
 							{
 								"name": "USER_ID",
 								"secureValue": "[parameters('emailAddress')]"
+							},
+							{
+								"name": "SESSION_CODE",
+								"secureValue": "[variables('sessionCode')]"
 							}
 						]
 					}
