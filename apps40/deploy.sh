@@ -156,7 +156,7 @@ az storage blob upload-batch --destination $BLOB_ENDPOINT --destination product-
 az storage blob upload-batch --destination $BLOB_ENDPOINT --destination profiles-list --source $tailwindWebImages/profiles-list --account-name $STORAGE
 
 #
-printf "\n***Setting up sclaing backend componets.***\n"
+printf "\n***Setting up scaling backend componets.***\n"
 #helm repo add kedacore https://kedacore.azureedge.net/helm
 #helm repo update
 #helm install kedacore/keda-edge --devel --set logLevel=debug --namespace keda --name keda
